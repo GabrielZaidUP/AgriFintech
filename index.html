@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriFintech — SQL Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0e1110;
+      --surface:   #161a17;
+      --surface2:  #1d2420;
+      --border:    #2a332d;
+      --border2:   #3a4840;
+      --accent:    #4ade80;
+      --accent2:   #22c55e;
+      --accent-bg: rgba(74,222,128,0.08);
+      --text:      #e8f0ea;
+      --muted:     #7a9480;
+      --danger:    #f87171;
+      --danger-bg: rgba(248,113,113,0.08);
+      --warn:      #fbbf24;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      grid-template-columns: 240px 1fr;
+    }
+
+    /* ── Header ── */
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 16px; height: 16px; }
+    .logo-name { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; color: var(--text); }
+    .logo-tag  { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+    .header-sep { flex: 1; }
+    .api-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+    .dot.online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+    /* ── Sidebar ── */
+    aside {
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+    .sidebar-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 0 16px 8px;
+      text-transform: uppercase;
+    }
+    .query-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 8px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+      line-height: 1.5;
+    }
+    .query-btn:hover { color: var(--text); background: var(--accent-bg); border-left-color: var(--border2); }
+    .query-btn.active { color: var(--accent); background: var(--accent-bg); border-left-color: var(--accent); }
+    .query-btn span { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .sidebar-sep { height: 1px; background: var(--border); margin: 12px 0; }
+
+    /* ── Main ── */
+    main {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    /* ── Editor panel ── */
+    .editor-panel {
+      padding: 20px 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .editor-title { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+    .editor-actions { display: flex; gap: 8px; margin-left: auto; align-items: center; }
+
+    textarea#sql-input {
+      width: 100%;
+      min-height: 130px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      line-height: 1.7;
+      transition: border-color 0.2s;
+    }
+    textarea#sql-input:focus { border-color: var(--accent); }
+    textarea#sql-input::placeholder { color: var(--muted); }
+
+    .btn-run {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 13px;
+      color: #0a1a0e;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-run:hover { background: var(--accent2); }
+    .btn-run:active { transform: scale(0.97); }
+    .btn-run:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+    .btn-run svg { width: 14px; height: 14px; }
+
+    .btn-clear {
+      padding: 8px 14px;
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-clear:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      min-height: 34px;
+    }
+    .status-pill {
+      display: flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status-pill.success { background: var(--accent-bg); color: var(--accent); border: 1px solid rgba(74,222,128,0.2); }
+    .status-pill.error   { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(248,113,113,0.2); }
+    .status-pill.loading { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .status-meta { color: var(--muted); }
+
+    /* ── Results panel ── */
+    .results-panel {
+      overflow: auto;
+      padding: 0;
+    }
+    .results-inner { padding: 20px 24px; }
+    .results-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 200px; gap: 12px; color: var(--muted);
+    }
+    .results-empty svg { width: 36px; height: 36px; opacity: 0.3; }
+    .results-empty p { font-size: 13px; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-family: var(--mono); font-size: 12px;
+    }
+    thead { background: var(--surface2); }
+    th {
+      padding: 10px 14px; text-align: left;
+      color: var(--muted); font-weight: 500;
+      font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      max-width: 280px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--accent-bg); }
+
+    /* Spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 12px; height: 12px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--muted);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 2C8 2 4 4 4 8C4 10.5 5.5 12.5 8 13.5C10.5 12.5 12 10.5 12 8C12 4 8 2 8 2Z" fill="#0a1a0e"/>
+        <circle cx="8" cy="8" r="2" fill="#0a1a0e"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">AgriFintech</div>
+      <div class="logo-tag">SQL Workbench</div>
+    </div>
+  </div>
+  <div class="header-sep"></div>
+  <div class="api-pill">
+    <div class="dot" id="status-dot"></div>
+    <span id="api-url-label">not connected</span>
+  </div>
+</header>
+
+<aside>
+  <div class="sidebar-label">Quick queries</div>
+
+  <button class="query-btn" onclick="loadQuery(0)">
+    All producers
+    <span>producers + region</span>
+  </button>
+  <button class="query-btn" onclick="loadQuery(1)">
+    Livestock commodities
+    <span>cattle, pig, poultry</span>
+  </button>
+  <button class="query-btn" onclick="loadQuery(2)">
+    Approved transactions
+    <span>status = approved</span>
+  </button>
+  <button class="query-btn" onclick="loadQuery(3)">
+    Producer portfolios
+    <span>JOIN 3 tables</span>
+  </button>
+  <button class="query-btn" onclick="loadQuery(4)">
+    Top loan amounts
+    <span>ORDER BY amount</span>
+  </button>
+  <button class="query-btn" onclick="loadQuery(5)">
+    Financial products
+    <span>loans & insurance</span>
+  </button>
+
+  <div class="sidebar-sep"></div>
+  <div class="sidebar-label">Connection</div>
+
+  <div style="padding: 0 16px;">
+    <input
+      id="api-input"
+      type="text"
+      placeholder="http://localhost:8000"
+      style="width:100%; padding:7px 10px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:var(--mono); font-size:11px; outline:none;"
+      oninput="updateApiUrl(this.value)"
+    />
+    <button
+      onclick="pingApi()"
+      style="margin-top:8px; width:100%; padding:7px; background:none; border:1px solid var(--border2); border-radius:6px; color:var(--muted); font-family:var(--sans); font-size:12px; cursor:pointer;"
+    >Test connection</button>
+  </div>
+</aside>
+
+<main>
+  <div class="editor-panel">
+    <div class="editor-header">
+      <span class="editor-title">query.sql</span>
+      <div class="editor-actions">
+        <button class="btn-clear" onclick="clearEditor()">Clear</button>
+        <button class="btn-run" id="run-btn" onclick="runQuery()">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 2L11 7L3 12V2Z" fill="currentColor"/></svg>
+          Execute
+        </button>
+      </div>
+    </div>
+
+    <textarea
+      id="sql-input"
+      placeholder="SELECT * FROM producers LIMIT 10;"
+      spellcheck="false"
+    ></textarea>
+
+    <div class="status-bar" id="status-bar">
+      <span class="status-meta">Ready — write a query or pick one from the sidebar</span>
+    </div>
+  </div>
+
+  <div class="results-panel">
+    <div class="results-inner" id="results-container">
+      <div class="results-empty" id="empty-state">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="8" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 14H32" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 14V28" stroke="currentColor" stroke-width="1"/>
+        </svg>
+        <p>Results will appear here</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const QUERIES = [
+    `SELECT producer_id, full_name, email, region, producer_type\nFROM producers\nORDER BY region;`,
+    `SELECT *\nFROM commodities\nWHERE category = 'livestock'\nORDER BY base_price DESC;`,
+    `SELECT t.transaction_id, p.full_name, fp.name AS product, t.amount, t.status\nFROM transactions t\nJOIN producers p ON t.producer_id = p.producer_id\nJOIN financial_products fp ON t.product_id = fp.product_id\nWHERE t.status = 'approved'\nORDER BY t.amount DESC;`,
+    `SELECT p.full_name, p.region, c.name AS commodity, pc.quantity, c.unit\nFROM producers p\nJOIN producer_commodities pc ON p.producer_id = pc.producer_id\nJOIN commodities c ON pc.commodity_id = c.commodity_id\nORDER BY p.full_name;`,
+    `SELECT p.full_name, SUM(t.amount) AS total_requested\nFROM transactions t\nJOIN producers p ON t.producer_id = p.producer_id\nGROUP BY p.full_name\nORDER BY total_requested DESC\nLIMIT 5;`,
+    `SELECT name, product_type, interest_rate, max_amount, duration_months\nFROM financial_products\nORDER BY product_type, max_amount DESC;`,
+  ];
+
+  let API_URL = 'http://localhost:8000';
+
+  function updateApiUrl(val) {
+    API_URL = val.trim() || 'http://localhost:8000';
+    document.getElementById('api-url-label').textContent = API_URL.replace('https://','').replace('http://','');
+  }
+
+  function loadQuery(i) {
+    document.getElementById('sql-input').value = QUERIES[i];
+    document.querySelectorAll('.query-btn').forEach((b,idx) => b.classList.toggle('active', idx === i));
+  }
+
+  function clearEditor() {
+    document.getElementById('sql-input').value = '';
+    document.querySelectorAll('.query-btn').forEach(b => b.classList.remove('active'));
+    setStatus('idle');
+    document.getElementById('results-container').innerHTML = `
+      <div class="results-empty" id="empty-state">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="8" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 14H32" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 14V28" stroke="currentColor" stroke-width="1"/>
+        </svg>
+        <p>Results will appear here</p>
+      </div>`;
+  }
+
+  function setStatus(type, msg, meta) {
+    const bar = document.getElementById('status-bar');
+    if (type === 'idle') {
+      bar.innerHTML = `<span class="status-meta">Ready — write a query or pick one from the sidebar</span>`;
+    } else if (type === 'loading') {
+      bar.innerHTML = `<span class="status-pill loading"><span class="spinner"></span> Running…</span>`;
+    } else if (type === 'success') {
+      bar.innerHTML = `<span class="status-pill success">✓ Success</span><span class="status-meta">${meta}</span>`;
+    } else if (type === 'error') {
+      bar.innerHTML = `<span class="status-pill error">✗ Error</span><span class="status-meta">${msg}</span>`;
+    }
+  }
+
+  async function pingApi() {
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('api-url-label');
+    dot.className = 'dot';
+    try {
+      const r = await fetch(API_URL + '/', { signal: AbortSignal.timeout(4000) });
+      if (r.ok) {
+        dot.className = 'dot online';
+        label.textContent = API_URL.replace(/https?:\/\//, '') + ' ✓';
+      } else { throw new Error(); }
+    } catch {
+      dot.className = 'dot';
+      label.textContent = 'unreachable';
+    }
+  }
+
+  async function runQuery() {
+    const sql = document.getElementById('sql-input').value.trim();
+    if (!sql) { setStatus('error', 'Query is empty.'); return; }
+
+    const btn = document.getElementById('run-btn');
+    btn.disabled = true;
+    setStatus('loading');
+
+    const t0 = performance.now();
+    try {
+      const res = await fetch(API_URL + '/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sql }),
+        signal: AbortSignal.timeout(15000),
+      });
+      const data = await res.json();
+      const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+
+      if (!res.ok) {
+        setStatus('error', data.detail || 'Unknown error from server.');
+        document.getElementById('results-container').innerHTML =
+          `<div class="results-empty"><p style="color:var(--danger); font-family:var(--mono); font-size:12px;">${data.detail}</p></div>`;
+        return;
+      }
+
+      setStatus('success', null, `${data.rowCount} row${data.rowCount !== 1 ? 's' : ''} · ${elapsed}s`);
+      renderTable(data);
+
+    } catch (e) {
+      const msg = e.name === 'TimeoutError'
+        ? 'Request timed out (15s). Is the API running?'
+        : `Could not reach API at ${API_URL}. Start the server first.`;
+      setStatus('error', msg);
+      document.getElementById('results-container').innerHTML =
+        `<div class="results-empty"><p style="color:var(--danger); font-family:var(--mono); font-size:12px;">${msg}</p></div>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function renderTable(data) {
+    const container = document.getElementById('results-container');
+    if (!data.rows || data.rows.length === 0) {
+      container.innerHTML = `<div class="results-empty"><p>Query ran successfully — no rows returned.</p></div>`;
+      return;
+    }
+    const cols = data.columns;
+    const rows = data.rows;
+
+    let html = `<div class="table-wrap"><table><thead><tr>`;
+    cols.forEach(c => { html += `<th>${c}</th>`; });
+    html += `</tr></thead><tbody>`;
+    rows.forEach(row => {
+      html += `<tr>`;
+      cols.forEach(c => {
+        const val = row[c];
+        const display = val === null ? '<span style="color:var(--muted)">NULL</span>'
+          : String(val).length > 60 ? String(val).slice(0, 60) + '…'
+          : val;
+        html += `<td title="${val ?? ''}">${display}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+  }
+
+  document.getElementById('sql-input').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); }
+  });
+
+  document.getElementById('api-input').value = API_URL;
+  document.getElementById('api-url-label').textContent = API_URL.replace('http://','');
+</script>
+</body>
+</html>
