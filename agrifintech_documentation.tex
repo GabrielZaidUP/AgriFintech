@@ -1,0 +1,1141 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ── Page geometry ─────────────────────────────────────────────
+\geometry{
+  top=2.5cm,
+  bottom=2.5cm,
+  left=2.8cm,
+  right=2.8cm,
+  headheight=15pt
+}
+
+% ── Colors ────────────────────────────────────────────────────
+\definecolor{agrigreen}{RGB}{22, 101, 52}
+\definecolor{agrilight}{RGB}{220, 252, 231}
+\definecolor{codebg}{RGB}{248, 249, 250}
+\definecolor{codeborder}{RGB}{222, 226, 230}
+\definecolor{accentblue}{RGB}{37, 99, 235}
+\definecolor{accentamber}{RGB}{180, 117, 23}
+\definecolor{dangerred}{RGB}{163, 45, 45}
+\definecolor{mutedgray}{RGB}{107, 114, 128}
+
+% ── Hyperref ──────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=agrigreen,
+  urlcolor=accentblue,
+  citecolor=agrigreen,
+  pdftitle={AgriFintech — Remote SQL Architect and Explorer},
+  pdfauthor={[Your Name]},
+  pdfsubject={Machine Learning for Large Data Volumes — Homework},
+}
+
+% ── Header / Footer ───────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{mutedgray}{AgriFintech — Remote SQL Architect}}
+\fancyhead[R]{\small\textcolor{mutedgray}{Machine Learning for Large Data Volumes}}
+\fancyfoot[C]{\small\textcolor{mutedgray}{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ── Section styling ───────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{agrigreen}}
+  {\thesection.}{0.6em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{agrigreen!80!black}}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{black}}
+  {\thesubsubsection.}{0.5em}{}
+
+% ── Code listings ─────────────────────────────────────────────
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{accentblue},
+  stringstyle=\color{agrigreen},
+  commentstyle=\itshape\color{mutedgray},
+  frame=single,
+  framesep=6pt,
+  rulecolor=\color{codeborder},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{mutedgray},
+  xleftmargin=1.5em,
+  framexleftmargin=1.5em,
+}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{accentblue},
+  stringstyle=\color{agrigreen},
+  commentstyle=\itshape\color{mutedgray},
+  frame=single,
+  framesep=6pt,
+  rulecolor=\color{codeborder},
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{mutedgray},
+  xleftmargin=1.5em,
+  framexleftmargin=1.5em,
+}
+
+\lstdefinestyle{bashstyle}{
+  language=bash,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{accentblue},
+  stringstyle=\color{agrigreen},
+  commentstyle=\itshape\color{mutedgray},
+  frame=single,
+  framesep=6pt,
+  rulecolor=\color{codeborder},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  numbers=none,
+  xleftmargin=0.5em,
+}
+
+% ── Tip / Warning boxes ───────────────────────────────────────
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{infobox}[1][]{
+  colback=agrilight,
+  colframe=agrigreen,
+  fonttitle=\bfseries\small,
+  title=#1,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  breakable,
+}
+
+\newtcolorbox{warningbox}[1][]{
+  colback=yellow!10,
+  colframe=accentamber,
+  fonttitle=\bfseries\small,
+  title=#1,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  breakable,
+}
+
+% ── Image placeholder command ─────────────────────────────────
+\newcommand{\imagebox}[2]{%
+  \begin{figure}[H]
+    \centering
+    \fbox{%
+      \begin{minipage}{0.88\linewidth}
+        \centering
+        \vspace{#1}
+        \textcolor{mutedgray}{\large\faImage}\\[6pt]
+        \textcolor{mutedgray}{\small\textit{#2}}
+        \vspace{#1}
+      \end{minipage}%
+    }
+    \caption{#2}
+  \end{figure}%
+}
+
+% ─────────────────────────────────────────────────────────────
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════
+%  TITLE PAGE
+% ══════════════════════════════════════════════════════════════
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+
+  {\Huge\bfseries\color{agrigreen} AgriFintech Platform}\\[0.4em]
+  {\large\color{mutedgray} Remote SQL Architect and Explorer}\\[2.5cm]
+
+  \begin{tabular}{rl}
+    \textbf{Subject:}   & Aprendizaje Automático para Grandes Volúmenes de Datos \\[4pt]
+    \textbf{Teacher:}   & Dr. Juan Carlos López Pimentel \\[4pt]
+    \textbf{Evidence:}  & Homework \\[4pt]
+    \textbf{Student:}   & Hector Manuel Eguiarte Carlos \n Gabriel Zaid \\[4pt]
+    \textbf{ID:}        & 0243795 \n 0243795 \\[4pt]
+    \textbf{Date:}      & \today \\
+  \end{tabular}
+
+  \vfill
+
+  % ── University logo placeholder ──────────────────────────
+  \fbox{%
+    \begin{minipage}{5cm}
+      \centering
+      \vspace{1.2cm}
+      \textcolor{mutedgray}{\faUniversity\quad University Logo}
+      \vspace{1.2cm}
+    \end{minipage}
+  }\\[1em]
+  {\small\textcolor{mutedgray}{Universidad Panamericana}}
+
+\end{titlepage}
+
+% ══════════════════════════════════════════════════════════════
+%  TABLE OF CONTENTS
+% ══════════════════════════════════════════════════════════════
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════
+%  1. INTRODUCTION
+% ══════════════════════════════════════════════════════════════
+\section{Introduction}
+
+\subsection{Objective}
+
+This project designs and implements a relational database schema on a remote server and
+builds a custom programmatic interface that communicates via a RESTful API to execute
+SQL instructions. The system is conceived as a lightweight \textit{SQL Bridge} — a tool
+that allows users to send raw SQL commands from a custom web interface to a remote
+database without relying on heavy CLI tools.
+
+\subsection{Domain: AgriFintech Platform}
+
+The chosen domain is an \textbf{agricultural fintech platform} (AgriFintech), a system
+that serves farmers and ranchers in Mexico by providing access to financial products
+such as crop production loans, livestock acquisition financing, and multi-risk insurance.
+
+This domain was selected because:
+\begin{itemize}[leftmargin=1.5em]
+  \item It produces naturally relational data (producers, commodities, financial products,
+        transactions) that demonstrates normalization clearly.
+  \item It reflects a realistic fintech use case with meaningful financial attributes
+        such as interest rates, loan amounts, and transaction statuses.
+  \item The variety between crop and livestock producers creates diverse seed data that
+        exercises JOIN queries across multiple tables.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════
+%  2. SYSTEM ARCHITECTURE
+% ══════════════════════════════════════════════════════════════
+\section{System Architecture}
+
+\subsection{Overview}
+
+The system is composed of three distinct layers, each with a clear responsibility and a
+separate deployment target. Figure~\ref{fig:arch_overview} shows the full architecture.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  layer/.style={draw, rounded corners=6pt, minimum width=8cm,
+                minimum height=1.3cm, align=center, font=\small},
+  node distance=2.0cm
+]
+  \node[layer, fill=agrilight, draw=agrigreen] (client)
+    {\textbf{Client Layer} \enspace {\scriptsize\textit{Browser}}\\[2pt]
+     {\scriptsize HTML\,+\,CSS\,+\,JavaScript \quad (\texttt{index.html})}};
+
+  \node[layer, fill=blue!5, draw=accentblue, below=2.2cm of client] (api)
+    {\textbf{API Layer} \enspace {\scriptsize\textit{Render.com}}\\[2pt]
+     {\scriptsize Python 3.11 \,·\, FastAPI 0.115 \,·\, Uvicorn}};
+
+  \node[layer, fill=yellow!10, draw=accentamber, below=2.2cm of api] (db)
+    {\textbf{Data Layer} \enspace {\scriptsize\textit{Neon.tech}}\\[2pt]
+     {\scriptsize PostgreSQL 15 \,·\, Serverless \,·\, SSL}};
+
+  \draw[->, thick, color=accentblue]
+    ([xshift=18pt]client.south) -- ([xshift=18pt]api.north)
+    node[midway, right, font=\scriptsize] {HTTPS \texttt{POST /query} \{sql\}};
+
+  \draw[->, thick, color=agrigreen]
+    ([xshift=-18pt]api.north) -- ([xshift=-18pt]client.south)
+    node[midway, left, font=\scriptsize] {JSON \{rows, columns\}};
+
+  \draw[->, thick, color=accentblue]
+    ([xshift=18pt]api.south) -- ([xshift=18pt]db.north)
+    node[midway, right, font=\scriptsize] {psycopg2 SSL/TCP};
+
+  \draw[->, thick, color=agrigreen]
+    ([xshift=-18pt]db.north) -- ([xshift=-18pt]api.south)
+    node[midway, left, font=\scriptsize] {result rows};
+\end{tikzpicture}
+\caption{System architecture — three-layer design with communication channels}
+\label{fig:arch_overview}
+\end{figure}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lXX}
+  \toprule
+  \textbf{Layer} & \textbf{Technology} & \textbf{Deployment} \\
+  \midrule
+  Client     & HTML + CSS + JavaScript      & Browser (localhost / any) \\
+  API Proxy  & Python 3.11, FastAPI, uvicorn & Render.com (free tier) \\
+  Database   & PostgreSQL 15                & Neon.tech (serverless, free tier) \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Communication Flow}
+
+Figure~\ref{fig:request_flow} shows the step-by-step lifecycle of a SQL query from the
+moment the user clicks \textit{Execute} to the moment the result table renders in the
+browser.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  step/.style={draw=agrigreen, fill=agrilight, rounded corners=4pt,
+               minimum width=2.9cm, minimum height=1.0cm,
+               align=center, font=\scriptsize, inner sep=5pt},
+  arr/.style={->, thick, >=Stealth, color=agrigreen!80!black}
+]
+  \node[step] (s1) at (0,0)     {\textbf{1. Input}\\\scriptsize\texttt{fetch()} POST};
+  \node[step] (s2) at (3.4,0)   {\textbf{2. CORS}\\\scriptsize Origin header};
+  \node[step] (s3) at (6.8,0)   {\textbf{3. Sanitize}\\\scriptsize Regex blocklist};
+  \node[step] (s4) at (6.8,-2)  {\textbf{4. Connect}\\\scriptsize psycopg2 SSL};
+  \node[step] (s5) at (3.4,-2)  {\textbf{5. Execute}\\\scriptsize RealDictCursor};
+  \node[step] (s6) at (0,-2)    {\textbf{6. Respond}\\\scriptsize JSON + render};
+
+  \draw[arr] (s1) -- (s2);
+  \draw[arr] (s2) -- (s3);
+  \draw[arr] (s3) -- (s4);
+  \draw[arr] (s4) -- (s5);
+  \draw[arr] (s5) -- (s6);
+\end{tikzpicture}
+\caption{Request lifecycle — 6-step sequence from user click to rendered results table}
+\label{fig:request_flow}
+\end{figure}
+
+The flow proceeds as follows:
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{User input:} The user types a SQL statement in the Workbench textarea
+        and clicks Execute (or presses \texttt{Ctrl+Enter}). The browser fires a
+        \texttt{fetch()} call sending a \texttt{POST /query} request with a JSON body
+        \texttt{\{"sql": "SELECT ..."\}}.
+
+  \item \textbf{CORS middleware:} FastAPI's \texttt{CORSMiddleware} validates the
+        incoming \texttt{Origin} header and attaches the appropriate
+        \texttt{Access-Control-Allow-*} response headers, permitting cross-origin
+        requests from the browser.
+
+  \item \textbf{Sanitization:} The \texttt{sanitize()} function scans the query string
+        with a compiled regular expression that blocks destructive keywords
+        (\texttt{DROP}, \texttt{DELETE}, \texttt{TRUNCATE}, \texttt{ALTER},
+        \texttt{GRANT}, \texttt{REVOKE}, \texttt{EXEC}). If a match is found, the
+        server returns a \texttt{403 Forbidden} immediately, before any database
+        connection is opened.
+
+  \item \textbf{Database connection:} \texttt{psycopg2} opens an SSL-encrypted
+        connection to the Neon PostgreSQL instance using the \texttt{DATABASE\_URL}
+        environment variable. A 10-second timeout prevents the server from hanging
+        on unreachable hosts.
+
+  \item \textbf{Query execution:} The query is passed to a \texttt{RealDictCursor}
+        which executes the statement and fetches all rows as Python dictionaries,
+        keyed by column name.
+
+  \item \textbf{JSON response:} FastAPI serializes the result into a JSON object
+        containing \texttt{status}, \texttt{rowCount}, \texttt{columns[]}, and
+        \texttt{rows[]}. The Workbench receives this and dynamically renders the
+        HTML results table.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════
+%  3. PHASE A — DATABASE DESIGN
+% ══════════════════════════════════════════════════════════════
+\section{Phase A: Database Design}
+
+\subsection{Entity Relationship Diagram}
+
+Figure~\ref{fig:erd} shows the Entity Relationship Diagram for the AgriFintech
+platform. The schema consists of five tables connected by foreign key relationships.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  entity/.style={
+    draw=agrigreen, rounded corners=4pt, fill=agrilight,
+    align=left, font=\scriptsize\ttfamily,
+    inner xsep=8pt, inner ysep=6pt, text width=3.4cm
+  },
+  rel/.style={thick, color=agrigreen!80!black},
+  card/.style={font=\scriptsize\bfseries, color=agrigreen!70!black,
+               fill=white, inner sep=1pt}
+]
+  % --- Nodes ---
+  \node[entity] (P) at (0, 0) {
+    \textbf{\color{agrigreen}producers}\\[2pt]
+    \underline{producer\_id} PK\\
+    full\_name\\
+    email UNIQUE\\
+    phone\\
+    region\\
+    producer\_type\\
+    created\_at
+  };
+
+  \node[entity] (FP) at (7.5, 0) {
+    \textbf{\color{agrigreen}financial\_products}\\[2pt]
+    \underline{product\_id} PK\\
+    name\\
+    product\_type\\
+    interest\_rate\\
+    max\_amount\\
+    duration\_months\\
+    description
+  };
+
+  \node[entity] (T) at (3.75, -4.5) {
+    \textbf{\color{agrigreen}transactions}\\[2pt]
+    \underline{transaction\_id} PK\\
+    producer\_id FK\\
+    product\_id FK\\
+    amount\\
+    status\\
+    notes\\
+    created\_at
+  };
+
+  \node[entity] (PC) at (0, -4.5) {
+    \textbf{\color{agrigreen}producer\_commodities}\\[2pt]
+    \underline{producer\_id} PK,FK\\
+    \underline{commodity\_id} PK,FK\\
+    quantity\\
+    harvest\_date
+  };
+
+  \node[entity] (C) at (-4.2, -4.5) {
+    \textbf{\color{agrigreen}commodities}\\[2pt]
+    \underline{commodity\_id} PK\\
+    name UNIQUE\\
+    category\\
+    unit\\
+    base\_price
+  };
+
+  % --- Relationships ---
+  % producers 1---N transactions
+  \draw[rel] (P.south) -- ++(0,-0.5) -| (T.north);
+  \node[card] at (0.15,-0.7)  {1};
+  \node[card] at (3.0, -3.8)  {N};
+
+  % financial_products 1---N transactions
+  \draw[rel] (FP.south) -- ++(0,-0.5) -| (T.north);
+  \node[card] at (7.35,-0.7)  {1};
+  \node[card] at (5.0, -3.8)  {N};
+
+  % producers 1---N producer_commodities
+  \draw[rel] (P.south) -- (PC.north);
+  \node[card] at (-0.3,-0.7)  {1};
+  \node[card] at (-0.3,-3.7)  {N};
+
+  % commodities 1---N producer_commodities
+  \draw[rel] (C.east) -- (PC.west);
+  \node[card] at (-3.3,-4.3)  {1};
+  \node[card] at (-1.2,-4.3)  {N};
+
+\end{tikzpicture}
+\caption{Entity Relationship Diagram — AgriFintech schema (5 tables, 3 relationships, 3NF)}
+\label{fig:erd}
+\end{figure}
+
+\subsection{Tables and Normalization}
+
+The schema is in \textbf{Third Normal Form (3NF)}:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{1NF:} All attributes are atomic and each table has a primary key.
+  \item \textbf{2NF:} No partial dependencies — all non-key attributes depend on the
+        full primary key. In \texttt{producer\_commodities}, both
+        \texttt{quantity} and \texttt{harvest\_date} depend on the composite key
+        \texttt{(producer\_id, commodity\_id)}.
+  \item \textbf{3NF:} No transitive dependencies — \texttt{base\_price} lives in
+        \texttt{commodities}, not in \texttt{transactions}, so a price change
+        requires a single update rather than updating many rows.
+\end{itemize}
+
+\subsubsection{Table: producers}
+
+Stores registered farmers and ranchers.
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  \textbf{Column} & \textbf{Type} & \textbf{Constraint} & \textbf{Description} \\
+  \midrule
+  producer\_id   & SERIAL        & PRIMARY KEY         & Auto-increment ID \\
+  full\_name     & VARCHAR(120)  & NOT NULL            & Full legal name \\
+  email          & VARCHAR(120)  & NOT NULL, UNIQUE    & Login / contact \\
+  phone          & VARCHAR(20)   & —                   & Optional phone \\
+  region         & VARCHAR(80)   & NOT NULL            & Mexican state \\
+  producer\_type & VARCHAR(20)   & CHECK               & crop / livestock / both \\
+  created\_at    & TIMESTAMP     & DEFAULT NOW()       & Registration date \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Table: commodities}
+
+Catalogue of agricultural goods supported by the platform.
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  \textbf{Column}  & \textbf{Type}     & \textbf{Constraint} & \textbf{Description} \\
+  \midrule
+  commodity\_id & SERIAL         & PRIMARY KEY  & Auto-increment ID \\
+  name          & VARCHAR(80)    & NOT NULL, UNIQUE & Commodity name \\
+  category      & VARCHAR(20)    & CHECK        & crop / livestock \\
+  unit          & VARCHAR(20)    & NOT NULL     & kg, ton, head \\
+  base\_price   & NUMERIC(12,2)  & NOT NULL     & Price per unit (MXN) \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Table: producer\_commodities}
+
+Resolves the many-to-many relationship between producers and commodities.
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  \textbf{Column}   & \textbf{Type}    & \textbf{Constraint}   & \textbf{Description} \\
+  \midrule
+  producer\_id  & INT            & FK → producers   & References producer \\
+  commodity\_id & INT            & FK → commodities & References commodity \\
+  quantity      & NUMERIC(12,2)  & NOT NULL         & Units held / grown \\
+  harvest\_date & DATE           & —                & NULL for livestock \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Primary key: \texttt{(producer\_id, commodity\_id)}.
+
+\subsubsection{Table: financial\_products}
+
+Catalogue of loan, insurance, and credit line products.
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  \textbf{Column}    & \textbf{Type}    & \textbf{Constraint} & \textbf{Description} \\
+  \midrule
+  product\_id      & SERIAL        & PRIMARY KEY  & Auto-increment ID \\
+  name             & VARCHAR(120)  & NOT NULL     & Product name \\
+  product\_type    & VARCHAR(20)   & CHECK        & loan / insurance / credit\_line \\
+  interest\_rate   & NUMERIC(5,2)  & —            & Annual \%, NULL for insurance \\
+  max\_amount      & NUMERIC(14,2) & NOT NULL     & Maximum disbursement (MXN) \\
+  duration\_months & INT           & —            & NULL for insurance \\
+  description      & TEXT          & —            & Free-text description \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Table: transactions}
+
+Records every financial operation requested by a producer.
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  \textbf{Column}    & \textbf{Type}    & \textbf{Constraint}       & \textbf{Description} \\
+  \midrule
+  transaction\_id & SERIAL        & PRIMARY KEY          & Auto-increment ID \\
+  producer\_id    & INT           & FK → producers       & Requesting producer \\
+  product\_id     & INT           & FK → financial\_products & Product used \\
+  amount          & NUMERIC(14,2) & NOT NULL             & Amount in MXN \\
+  status          & VARCHAR(20)   & CHECK, DEFAULT       & pending/approved/rejected/paid \\
+  notes           & TEXT          & —                    & Optional remarks \\
+  created\_at     & TIMESTAMP     & DEFAULT NOW()        & Transaction date \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Relationships}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{producers $\leftrightarrow$ commodities} — Many-to-many via
+        \texttt{producer\_commodities}. A producer can grow multiple commodities, and
+        the same commodity can be produced by many producers.
+  \item \textbf{producers $\rightarrow$ transactions} — One-to-many. A single
+        producer can request multiple financial operations over time.
+  \item \textbf{financial\_products $\rightarrow$ transactions} — One-to-many.
+        The same product (e.g., \textit{Crédito Siembra}) can be applied for by
+        many producers.
+\end{itemize}
+
+\subsection{DDL — Create Tables}
+
+\begin{lstlisting}[style=sqlstyle, caption={DDL: producers table}]
+CREATE TABLE producers (
+    producer_id   SERIAL          PRIMARY KEY,
+    full_name     VARCHAR(120)    NOT NULL,
+    email         VARCHAR(120)    NOT NULL UNIQUE,
+    phone         VARCHAR(20),
+    region        VARCHAR(80)     NOT NULL,
+    producer_type VARCHAR(20)     NOT NULL
+        CHECK (producer_type IN ('crop', 'livestock', 'both')),
+    created_at    TIMESTAMP       NOT NULL DEFAULT NOW()
+);
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={DDL: commodities table}]
+CREATE TABLE commodities (
+    commodity_id  SERIAL          PRIMARY KEY,
+    name          VARCHAR(80)     NOT NULL UNIQUE,
+    category      VARCHAR(20)     NOT NULL
+        CHECK (category IN ('crop', 'livestock')),
+    unit          VARCHAR(20)     NOT NULL,
+    base_price    NUMERIC(12, 2)  NOT NULL
+);
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={DDL: producer\_commodities junction table}]
+CREATE TABLE producer_commodities (
+    producer_id   INT  NOT NULL REFERENCES producers(producer_id)
+                                ON DELETE CASCADE,
+    commodity_id  INT  NOT NULL REFERENCES commodities(commodity_id)
+                                ON DELETE CASCADE,
+    quantity      NUMERIC(12, 2) NOT NULL,
+    harvest_date  DATE,
+    PRIMARY KEY (producer_id, commodity_id)
+);
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={DDL: financial\_products table}]
+CREATE TABLE financial_products (
+    product_id      SERIAL          PRIMARY KEY,
+    name            VARCHAR(120)    NOT NULL,
+    product_type    VARCHAR(20)     NOT NULL
+        CHECK (product_type IN ('loan', 'insurance', 'credit_line')),
+    interest_rate   NUMERIC(5, 2),
+    max_amount      NUMERIC(14, 2)  NOT NULL,
+    duration_months INT,
+    description     TEXT
+);
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={DDL: transactions table}]
+CREATE TABLE transactions (
+    transaction_id  SERIAL          PRIMARY KEY,
+    producer_id     INT  NOT NULL REFERENCES producers(producer_id),
+    product_id      INT  NOT NULL REFERENCES financial_products(product_id),
+    amount          NUMERIC(14, 2)  NOT NULL,
+    status          VARCHAR(20)     NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'approved', 'rejected', 'paid')),
+    notes           TEXT,
+    created_at      TIMESTAMP       NOT NULL DEFAULT NOW()
+);
+\end{lstlisting}
+
+\subsection{Seed Data}
+
+Each table is populated with at least 10 rows of realistic mock data representing
+Mexican agricultural producers, agri-commodities (both crops and livestock), and
+fintech products denominated in MXN. The full \texttt{INSERT} scripts are provided
+in the attached \texttt{agrifintech\_schema.sql} file.
+
+% ══════════════════════════════════════════════════════════════
+%  4. PHASE B — API PROXY
+% ══════════════════════════════════════════════════════════════
+\section{Phase B: The API Proxy}
+
+\subsection{Technology Stack}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Framework:} FastAPI 0.115 — chosen for its automatic OpenAPI
+        documentation, native async support, and Pydantic request validation.
+  \item \textbf{Server:} Uvicorn (ASGI) — lightweight, production-ready.
+  \item \textbf{DB driver:} psycopg2-binary 2.9 — the standard PostgreSQL adapter
+        for Python.
+  \item \textbf{Deployment:} Render.com free tier — zero-config deployment from a
+        GitHub repository, provides a public HTTPS URL.
+\end{itemize}
+
+\subsection{Project Structure}
+
+\begin{lstlisting}[style=bashstyle, caption={Project file structure}]
+agrifintech-api/
+├── main.py            # FastAPI application
+├── requirements.txt   # Python dependencies
+├── .env               # DATABASE_URL (never committed)
+├── .env.example       # Template for the connection string
+└── render.yaml        # Render.com deployment config
+\end{lstlisting}
+
+\subsection{Endpoint: POST /query}
+
+\subsubsection{Request}
+
+\begin{lstlisting}[style=pythonstyle, caption={Pydantic request model}]
+class QueryRequest(BaseModel):
+    sql: str
+\end{lstlisting}
+
+\textbf{Example request body:}
+\begin{lstlisting}[style=bashstyle]
+POST /query
+Content-Type: application/json
+
+{ "sql": "SELECT * FROM producers LIMIT 5" }
+\end{lstlisting}
+
+\subsubsection{Response}
+
+\textbf{Success (200):}
+\begin{lstlisting}[style=bashstyle]
+{
+  "status":   "success",
+  "rowCount": 5,
+  "columns":  ["producer_id", "full_name", "region", ...],
+  "rows":     [{ "producer_id": 1, "full_name": "Carlos Mendoza", ... }, ...]
+}
+\end{lstlisting}
+
+\textbf{Sanitization error (403):}
+\begin{lstlisting}[style=bashstyle]
+{ "detail": "Query contains forbidden keywords (DROP, DELETE, ALTER, etc.)." }
+\end{lstlisting}
+
+\textbf{SQL syntax error (400):}
+\begin{lstlisting}[style=bashstyle]
+{ "detail": "SQL syntax error: syntax error at or near ..." }
+\end{lstlisting}
+
+\subsection{API Security}
+
+Security is implemented in two independent layers.
+
+\subsubsection{Layer 1 — Input Sanitization (Application Level)}
+
+\begin{lstlisting}[style=pythonstyle, caption={Sanitization function in main.py}]
+BLOCKED_PATTERNS = re.compile(
+    r"\b(DROP|DELETE|TRUNCATE|ALTER|INSERT|UPDATE|GRANT|REVOKE"
+    r"|EXEC|EXECUTE|xp_|sp_|--|\bOR\b\s+\b1\b\s*=\s*\b1\b)\b",
+    re.IGNORECASE,
+)
+
+def sanitize(sql: str) -> str:
+    sql = sql.strip()
+    if not sql:
+        raise HTTPException(400, "SQL query cannot be empty.")
+    if len(sql) > 2000:
+        raise HTTPException(400, "Query too long (max 2000 chars).")
+    if BLOCKED_PATTERNS.search(sql):
+        raise HTTPException(403, "Query contains forbidden keywords.")
+    return sql
+\end{lstlisting}
+
+The sanitizer blocks:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{DDL statements:} \texttt{DROP}, \texttt{ALTER}, \texttt{TRUNCATE}
+  \item \textbf{DML statements:} \texttt{DELETE}, \texttt{INSERT}, \texttt{UPDATE}
+  \item \textbf{Privilege commands:} \texttt{GRANT}, \texttt{REVOKE}
+  \item \textbf{Execution commands:} \texttt{EXEC}, \texttt{EXECUTE}, \texttt{xp\_}, \texttt{sp\_}
+  \item \textbf{SQL comments:} \texttt{--} (used in injection attacks)
+  \item \textbf{Classic injection pattern:} \texttt{OR 1=1}
+\end{itemize}
+
+\subsubsection{Layer 2 — Database Permissions (PostgreSQL Level)}
+
+A read-only database user is created on Neon so that even if a malformed query
+bypasses the regex, the database engine itself will reject the operation:
+
+\begin{lstlisting}[style=sqlstyle, caption={Read-only user setup on Neon}]
+CREATE USER api_user WITH PASSWORD 'your_secure_password';
+GRANT CONNECT ON DATABASE neondb TO api_user;
+GRANT USAGE ON SCHEMA public TO api_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO api_user;
+\end{lstlisting}
+
+\begin{infobox}[Defense in depth]
+  Using two independent security layers means a bypass of the application-level
+  regex still cannot cause data loss, because the database user physically lacks
+  \texttt{DELETE}, \texttt{DROP}, or \texttt{ALTER} privileges.
+\end{infobox}
+
+\subsection{Error Handling Summary}
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  \textbf{Scenario}          & \textbf{HTTP Status} & \textbf{Source} \\
+  \midrule
+  Empty query                & 400                  & sanitize() \\
+  Query too long (>2000)     & 400                  & sanitize() \\
+  Blocked keyword            & 403                  & sanitize() \\
+  SQL syntax error           & 400                  & psycopg2 \\
+  DB connection failure      & 503                  & psycopg2 \\
+  Missing DATABASE\_URL      & 500                  & get\_connection() \\
+  Generic DB error           & 500                  & psycopg2 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Running the API}
+
+\subsubsection{Local development}
+
+\begin{lstlisting}[style=bashstyle, caption={Local setup commands}]
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate          # Mac / Linux
+venv\Scripts\activate             # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set environment variable
+cp .env.example .env
+# Edit .env and paste your Neon connection string
+
+# Run the server
+uvicorn main:app --reload
+# Server running at http://127.0.0.1:8000
+# Interactive docs at http://127.0.0.1:8000/docs
+\end{lstlisting}
+
+\subsubsection{Deployment to Render.com}
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item Push the project folder to a GitHub repository (with \texttt{.env} in
+        \texttt{.gitignore}).
+  \item Create a new Web Service on Render, connecting the GitHub repo.
+  \item Render auto-detects \texttt{render.yaml} and configures the build and
+        start commands.
+  \item In the Render dashboard, add the \texttt{DATABASE\_URL} environment
+        variable with the Neon connection string.
+  \item After deployment, the API is accessible at a public HTTPS URL such as
+        \texttt{https://agrifintech-api.onrender.com}.
+\end{enumerate}
+
+\subsection{FastAPI Auto-Generated Documentation}
+
+FastAPI automatically generates interactive API documentation at \texttt{/docs}
+(Swagger UI) and \texttt{/redoc}. Figure~\ref{fig:swagger} shows the Swagger UI
+for the \texttt{POST /query} endpoint.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/img_swagger.png}
+  \caption{FastAPI Swagger UI at \texttt{/docs} — \texttt{POST /query} endpoint}
+  \label{fig:swagger}
+\end{figure}
+
+% ══════════════════════════════════════════════════════════════
+%  5. PHASE C — THE WORKBENCH
+% ══════════════════════════════════════════════════════════════
+\section{Phase C: The SQL Workbench}
+
+\subsection{Overview}
+
+The Workbench is a single-file HTML application (\texttt{index.html}) that
+communicates with the FastAPI backend via \texttt{fetch()}. It requires no build
+tools, no package manager, and no server — it runs by opening the file directly
+in a browser.
+
+\subsection{Interface Components}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  \textbf{Component}     & \textbf{Description} \\
+  \midrule
+  Header bar         & Displays the app name, API connection pill with live green dot. \\
+  Quick query sidebar & Six preloaded queries covering producers, commodities, JOINs, and aggregations. \\
+  SQL textarea        & Multi-line monospace editor for raw SQL input. \\
+  Execute button      & Sends the query; also triggered by \texttt{Ctrl+Enter}. \\
+  Status bar          & Shows a colored pill (Success / Error) with row count and elapsed time. \\
+  Results table       & Dynamically rendered HTML table with column headers, row hover, and NULL highlighting. \\
+  Connection tester   & Input for the API URL and a ``Test connection'' button that pings \texttt{GET /}. \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Workbench Screenshots}
+
+Figure~\ref{fig:wb_idle} shows the initial state of the Workbench, and
+Figure~\ref{fig:wb_results} shows a successful query with results rendered in the
+table.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/img_wb_idle.png}
+  \caption{SQL Workbench — idle state}
+  \label{fig:wb_idle}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/img_wb_results.png}
+  \caption{SQL Workbench — successful query result}
+  \label{fig:wb_results}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/img_wb_error.png}
+  \caption{SQL Workbench — error state (blocked query)}
+  \label{fig:wb_error}
+\end{figure}
+
+\subsection{Sample Queries}
+
+The sidebar provides the following preloaded queries that demonstrate the system's
+capabilities:
+
+\begin{lstlisting}[style=sqlstyle, caption={Query 1 — all producers ordered by region}]
+SELECT producer_id, full_name, email, region, producer_type
+FROM producers
+ORDER BY region;
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={Query 2 — three-table JOIN for producer portfolios}]
+SELECT p.full_name, p.region, c.name AS commodity,
+       pc.quantity, c.unit
+FROM producers p
+JOIN producer_commodities pc ON p.producer_id = pc.producer_id
+JOIN commodities c ON pc.commodity_id = c.commodity_id
+ORDER BY p.full_name;
+\end{lstlisting}
+
+\begin{lstlisting}[style=sqlstyle, caption={Query 3 — top producers by total loan amount}]
+SELECT p.full_name, SUM(t.amount) AS total_requested
+FROM transactions t
+JOIN producers p ON t.producer_id = p.producer_id
+GROUP BY p.full_name
+ORDER BY total_requested DESC
+LIMIT 5;
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════
+%  6. NEON DATABASE SETUP
+% ══════════════════════════════════════════════════════════════
+\section{Neon PostgreSQL Setup}
+
+Figure~\ref{fig:neon} shows the Neon.tech dashboard with the AgriFintech project
+and the connection string used by the API.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\linewidth]{img/img_neon.png}
+  \caption{Neon.tech dashboard — project overview and connection details}
+  \label{fig:neon}
+\end{figure}
+
+The connection string follows the format:
+
+\begin{lstlisting}[style=bashstyle]
+postgresql://user:password@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+\end{lstlisting}
+
+This string is stored exclusively in the \texttt{.env} file locally and in Render's
+encrypted environment variable store in production — it is never hardcoded or
+committed to version control.
+
+% ══════════════════════════════════════════════════════════════
+%  7. CONCLUSIONS
+% ══════════════════════════════════════════════════════════════
+\section{Conclusions}
+
+This project successfully demonstrates the design and implementation of a fully
+remote, API-driven database management system applied to a realistic AgriFintech
+domain. The key outcomes are:
+
+\begin{itemize}[leftmargin=1.5em]
+  \item A normalized (3NF) relational schema with five tables, meaningful constraints,
+        and over 10 rows of seed data per table, covering both crop and livestock
+        producers in Mexico.
+
+  \item A FastAPI backend with a two-layer security model — regex-based keyword
+        blocking and PostgreSQL read-only user permissions — that handles malformed
+        SQL, connection failures, and syntax errors with appropriate HTTP status codes.
+
+  \item A lightweight single-file Workbench UI that communicates with the API
+        entirely through \texttt{fetch()}, renders results dynamically, and provides
+        clear status feedback (success pill, error pill, row count, elapsed time).
+
+  \item A clean separation of concerns: the client layer is static HTML, the API
+        layer is a stateless Python service, and the data layer is a managed remote
+        PostgreSQL instance — each independently deployable and replaceable.
+\end{itemize}
+
+\begin{warningbox}[Known limitations]
+  The current sanitizer uses a regex blocklist, which is a heuristic approach.
+  A more robust production solution would use a SQL parser (such as \texttt{sqlglot})
+  to build a whitelist of allowed statement types, or enforce permissions entirely at
+  the database user level and remove application-level sanitization.
+\end{warningbox}
+
+% ══════════════════════════════════════════════════════════════
+%  8. REFERENCES
+% ══════════════════════════════════════════════════════════════
+\section{References}
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item FastAPI Documentation. \textit{FastAPI — Modern, fast web framework for
+        building APIs with Python}. \url{https://fastapi.tiangolo.com}
+
+  \item Neon Documentation. \textit{Neon Serverless Postgres}. \url{https://neon.tech/docs}
+
+  \item psycopg2 Documentation. \textit{psycopg — PostgreSQL adapter for Python}.
+        \url{https://www.psycopg.org/docs/}
+
+  \item PostgreSQL Global Development Group. \textit{PostgreSQL 15 Documentation}.
+        \url{https://www.postgresql.org/docs/15/}
+
+  \item Codd, E. F. (1970). \textit{A relational model of data for large shared data
+        banks}. Communications of the ACM, 13(6), 377–387.
+
+  \item OWASP. \textit{SQL Injection Prevention Cheat Sheet}.
+        \url{https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html}
+
+  \item Render Documentation. \textit{Deploy a Python Web Service}.
+        \url{https://render.com/docs/deploy-fastapi}
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════
+%  APPENDIX
+% ══════════════════════════════════════════════════════════════
+\appendix
+
+\section{File Listing}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{llX}
+  \toprule
+  \textbf{File}                   & \textbf{Phase} & \textbf{Description} \\
+  \midrule
+  \texttt{agrifintech\_schema.sql} & A      & DDL + seed INSERT statements \\
+  \texttt{main.py}                 & B      & FastAPI application \\
+  \texttt{requirements.txt}        & B      & Python dependencies \\
+  \texttt{.env.example}            & B      & Connection string template \\
+  \texttt{render.yaml}             & B      & Render.com deployment config \\
+  \texttt{index.html}              & C      & SQL Workbench (single file) \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Full main.py Source}
+
+\begin{lstlisting}[style=pythonstyle, caption={Complete FastAPI backend — main.py}]
+import os, re
+import psycopg2, psycopg2.extras
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = FastAPI(title="AgriFintech SQL Bridge", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["POST", "GET"],
+    allow_headers=["*"],
+)
+
+class QueryRequest(BaseModel):
+    sql: str
+
+BLOCKED_PATTERNS = re.compile(
+    r"\b(DROP|DELETE|TRUNCATE|ALTER|INSERT|UPDATE|GRANT|REVOKE"
+    r"|EXEC|EXECUTE|xp_|sp_|--|\bOR\b\s+\b1\b\s*=\s*\b1\b)\b",
+    re.IGNORECASE,
+)
+
+def sanitize(sql: str) -> str:
+    sql = sql.strip()
+    if not sql:
+        raise HTTPException(400, "SQL query cannot be empty.")
+    if len(sql) > 2000:
+        raise HTTPException(400, "Query too long (max 2000 chars).")
+    if BLOCKED_PATTERNS.search(sql):
+        raise HTTPException(403, "Query contains forbidden keywords.")
+    return sql
+
+def get_connection():
+    dsn = os.getenv("DATABASE_URL")
+    if not dsn:
+        raise HTTPException(500, "DATABASE_URL not configured.")
+    try:
+        return psycopg2.connect(dsn, connect_timeout=10)
+    except psycopg2.OperationalError as e:
+        raise HTTPException(503, f"Database connection failed: {e}")
+
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "AgriFintech SQL Bridge running."}
+
+@app.post("/query")
+def run_query(body: QueryRequest):
+    clean_sql = sanitize(body.sql)
+    conn = get_connection()
+    try:
+        with conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor
+        ) as cur:
+            cur.execute(clean_sql)
+            if cur.description:
+                rows = cur.fetchall()
+                return {
+                    "status":   "success",
+                    "rowCount": len(rows),
+                    "columns":  [d[0] for d in cur.description],
+                    "rows":     [dict(r) for r in rows],
+                }
+            conn.commit()
+            return {"status": "success", "rowCount": cur.rowcount,
+                    "columns": [], "rows": []}
+    except psycopg2.errors.SyntaxError as e:
+        raise HTTPException(400, f"SQL syntax error: {e}")
+    except psycopg2.Error as e:
+        raise HTTPException(500, f"Database error: {e}")
+    finally:
+        conn.close()
+\end{lstlisting}
+
+\end{document}
+\end{antml:parameter>
